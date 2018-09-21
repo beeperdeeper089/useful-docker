@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+  traefik_proxy:
+    image: traefik:alpine
+    command:
+      - --logLevel=DEBUG
+      - --entrypoints=Name:http Address::80 Redirect.EntryPoint:https
+      - --entrypoints=Name:https Address::443 TLS
+      - --defaultentrypoints=http,https
+      - --acme
+      - --acme.email=youremail@example.com
+      - --acme.storage=/etc/traefik/acme.json
+      - --acme.entryPoint=https
+      - --acme.httpChallenge.entryPoint=http
+      - --acme.OnHostRule=true
+      - --acme.onDemand=false
+      - --acme.acmeLogging=true
+      - --web
+      - --docker
+      - --docker.watch
+      - --docker.exposedbydefault=false
+    networks:
+      - webgateway
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/traefik:/etc/traefik
+    labels:
+      - "traefik.docker.network=webgateway"
+      - "traefik.frontend.rule=Host:SUBDOMAIN FOR TRAEFIK DASHBOARD HERE"
+      # Traefik will proxy to its own GUI
+      - "traefik.port=8080"
+      - "traefik.enable=true"
+networks:
+  webgateway:
+    external: true
