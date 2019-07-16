@@ -1,0 +1,27 @@
+version: "3.3"
+
+services:
+  qbittorrent:
+    image: linuxserver/qbittorent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - UMASK_SET=022
+    volumes:
+      - /opt/downloads:/downloads
+    networks:
+      - webgateway
+    ports:
+      - 6881:6881
+      - 6881:6881/udp
+    labels:
+      - "traefik.docker.network=webgateway"
+      - "traefik.frontend.rule=Host:qbt.beeperdeeper.tk"
+      - "traefik.port=8080"
+      - "traefik.enable=true"
+      
+network:
+  webgateway:
+    external: true
+    driver: overlay
