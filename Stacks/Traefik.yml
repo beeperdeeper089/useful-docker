@@ -9,12 +9,12 @@ services:
       - --entrypoints=Name:https Address::443 TLS
       - --defaultentrypoints=http,https
       - --acme
-      - --acme.email=youremail@example.com
+      - --acme.email=YOUR_EMAIL_HERE
       - --acme.storage=/etc/traefik/acme.json
       - --acme.entryPoint=https
       - --acme.httpChallenge.entryPoint=http
       - --acme.OnHostRule=true
-      - --acme.onDemand=false
+      - --acme.onDemand=true
       - --acme.acmeLogging=true
       - --web
       - --docker
@@ -29,11 +29,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /opt/traefik:/etc/traefik
     labels:
-      - "traefik.docker.network=webgateway"
-      - "traefik.frontend.rule=Host:SUBDOMAIN FOR TRAEFIK DASHBOARD HERE"
-      # Traefik will proxy to its own GUI
-      - "traefik.port=8080"
-      - "traefik.enable=true"
+      - traefik.docker.network=webgateway
+      - traefik.frontend.rule=Host:YOUR_DOMAIN_HERE;PathPrefixStrip:/traefik
+      - traefik.port=8080
+      - traefik.enable=true
+
 networks:
   webgateway:
     external: true

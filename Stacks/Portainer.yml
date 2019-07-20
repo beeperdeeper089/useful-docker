@@ -1,0 +1,20 @@
+version: '3.3'
+
+services:
+  portainer:
+    image: portainer/portainer
+    volumes:
+      - /opt/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - webgateway
+    labels:
+      - "traefik.docker.network=webgateway"
+      - "traefik.port=9000"
+      - "traefik.frontend.rule=Host:YOUR_DOMAIN_HERE;PathPrefixStrip:/portainer"
+      - "traefik.enable=true"
+
+networks:
+  webgateway:
+    driver: overlay
+    external: true
