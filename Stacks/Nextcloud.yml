@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+  database:
+    image: postgres:alpine
+    volumes:
+      - /opt/nextcloud/database_storage_postgres:/var/lib/postgresql/data
+
+  nextcloud:
+    image: nextcloud:14.0.13-fpm-alpine
+    networks:
+      - webgateway
+    volumes:
+      - /opt/nextcloud/main:/var/www/html
+      - /opt/nextcloud/apps:/var/www/html/custom_apps
+      - /opt/nextcloud/config:/var/www/html/config
+      - /mnt/nextcloud_storage/data:/var/www/html/data
+    labels:
+      - traefik.docker.network=webgateway
+      - traefik.frontend.rule=Host:YOUR_DOMAIN_HERE;PathPrefixStrip:/traefik
+      - traefik.port=8080
+      - traefik.enable=true
+
+networks:
+  webgateway:
+    external: true
